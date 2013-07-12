@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>spuds:geoipMod</id>
+	<name>geoIP Location</name>
+	<version>1.1.2</version>
+	<type>modification</type>
+
+	<install for="2.0 - 2.0.99">
+		<readme type="file" parsebbc="true">install-readme.txt</readme>
+		<require-file name="Sources/geoIPIntegration.php" destination="$sourcedir">Our integration Functions</require-file>
+		<require-file name="Sources/geoIP.php" destination="$sourcedir">Primary modification functions</require-file>
+		<require-file name="Sources/geoIPAdmin.php" destination="$sourcedir">The geoIP Admin functions </require-file>
+		<require-file name="css/geoIP.css" destination="$themedir/css">Style Sheets</require-file>
+		<require-file name="scripts/geoIP_database.js" destination="$themedir/scripts">Javascript for database install</require-file>
+		<require-file name="template/geoIP.template.php" destination="$themedir">The templates</require-file>
+		<require-file name="language/geoIP.english.php" destination="$themedir/languages">Language file</require-file>
+		<require-file name="language/geoIP.english-utf8.php" destination="$themedir/languages">Language file</require-file>
+		<require-file name="geoip.gif" destination="$themedir/images/admin">Menu Icon</require-file>
+		<require-dir name="ISO_3166_Flags" destination="$imagesdir">Gif images of all country flags</require-dir>
+		<require-dir name="geoIP" destination="$sourcedir">Directory to hold the downloads</require-dir>
+		<require-file name="GeoLiteCity-CountryCodes.csv" destination="$sourcedir/geoIP">Country Code CSV</require-file>
+		<require-file name="GeoLiteCity-RegionCodes.csv" destination="$sourcedir/geoIP">Region Code CSV</require-file>
+		<modification type="file">modification.xml</modification>
+		<modification>language.xml</modification>
+		<modification>language-utf8.xml</modification>
+		<code type="file">add_remove_hooks.php</code>
+		<database type="file">add_settings.php</database>
+		<redirect url="index.php?action=admin;area=geoIP" timeout="5000">redirect.txt</redirect>
+	</install>
+
+	<uninstall for="2.0 - 2.0.99">
+		<code type="file">add_remove_hooks.php</code>
+		<remove-file name="$sourcedir/geoIPIntegration.php" />
+		<remove-file name="$sourcedir/geoIP.php" />
+		<remove-file name="$sourcedir/geoIPAdmin.php" />
+		<remove-file name="$themedir/css/geoIP.css" />
+		<remove-file name="$themedir/scripts/geoIP_database.js" />
+		<remove-file name="$themedir/geoIP.template.php" />
+		<remove-file name="$themedir/languages/geoIP.english.php" />
+		<remove-file name="$themedir/languages/geoIP.english-utf8.php" />
+		<remove-file name="$themedir/images/admin/geoip.gif" />
+		<remove-dir name="$imagesdir/ISO_3166_Flags" />
+		<remove-dir name="$sourcedir/geoIP" />
+		<modification type="file" reverse="true">modification.xml</modification>
+		<modification type="file" reverse="true">language.xml</modification>
+		<modification type="file" reverse="true">language-utf8.xml</modification>
+		<database type="file">remove_settings.php</database>
+	</uninstall>
+
+</package-info>

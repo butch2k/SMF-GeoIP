@@ -1,0 +1,205 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<!-- --------------------------------------------------------------------------
+  package "geoIP" Mod for Simple Machines Forum (SMF) V2.0
+  author Spuds
+  copyright (c) 2011 Spuds
+  license Mozilla Public License version 1.1 http://www.mozilla.org/MPL/1.1/.
+--------------------------------------------------------------------------- -->
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>spuds:geoipMod</id>
+	<name>geoIP Location</name>
+
+	<file name="$sourcedir/Register.php">
+		<operation>
+			<search position="before"><![CDATA[	// You are not a guest, so you are a member - and members don't get to register twice!
+	elseif (empty($user_info['is_guest']))
+		redirectexit();]]></search>
+			<add><![CDATA[	
+	
+	// geoIP check to see if this is from an allowed country
+	if (!empty($modSettings['geoIP_enablereg']) && !empty($modSettings['geoIPCC']) && !allowedTo('moderate_forum') && !empty($modSettings['geoIP_db']))
+	{
+		include_once($sourcedir . '/geoIP.php');
+		$check = ($modSettings['geoIP_db'] == 2) ? geo_search_lite($user_info['ip']) : geo_search($user_info['ip']);
+		if ($check && count($check))
+		{
+			// we know (well have a very good idea) of where they are ...
+			$country = $check[0]['cc'];
+			$cc_found = strpos($modSettings['geoIPCC'],$country);
+
+			// country code is in list and we are blocking -OR- county code is not in list and we are only allowing
+			if (($cc_found !== false && !empty($modSettings['geoIP_cc_block'])) || ($cc_found === false && empty($modSettings['geoIP_cc_block'])))
+				fatal_lang_error('registration_disabled', false);
+		}
+	}]]></add>
+		</operation>
+	</file>
+	
+	<file name="$themedir/BoardIndex.template.php">
+		<operation error="ignore">
+			<search position="replace"><![CDATA[	echo $context['show_who'] ? '</a>' : '', '
+			</p>
+			<p class="inline smalltext">';]]></search>
+			<add><![CDATA[	echo $context['show_who'] ? '</a>' : '', (!empty($context['can_see_onlinemap']) ? '<a href="' . $scripturl . '?action=geoIP">, [' . $txt['geoIPOnlineMap'] . ']</a>' : ''), '
+			</p>
+			<p class="inline smalltext">';]]></add>
+		</operation>
+
+		<operation error="ignore">
+			<search position="replace"><![CDATA[	echo $context['show_who'] ? '</a>' : '', '
+						<div class="smalltext">';]]></search>
+			<add><![CDATA[	echo $context['show_who'] ? '</a>' : '', (!empty($context['can_see_onlinemap']) ? '<a href="' . $scripturl . '?action=geoIP">, [' . $txt['geoIPOnlineMap'] . ']</a>' : ''), '
+						<div class="smalltext">';]]></add>
+		</operation>
+	</file>
+	
+	<file name="$sourcedir/Who.php">
+		<operation>
+			<search position="replace"><![CDATA[			lo.id_spider]]></search>
+			<add><![CDATA[			lo.id_spider, lo.cc, lo.country]]></add>
+		</operation>
+		
+		<operation>
+			<search position="replace"><![CDATA[			'id_spider' => $row['id_spider'],]]></search>
+			<add><![CDATA[			'id_spider' => $row['id_spider'],
+			'cc' => $row['cc'],
+			'country' => $row['country'],]]></add>
+		</operation>
+	</file>
+	
+	<file name="$themedir/Who.template.php">
+		<operation>
+		<search position="replace"><![CDATA[function template_main()
+{
+	global $context, $settings, $options, $scripturl, $txt;]]></search>
+		<add><![CDATA[function template_main()
+{
+	global $context, $settings, $options, $scripturl, $txt, $modSettings;]]></add>
+		</operation>
+		
+		<operation>
+		<search position="replace"><![CDATA[								<span class="member', $member['is_hidden'] ? ' hidden' : '', '">
+									', $member['is_guest'] ? $member['name'] : '<a href="' . $member['href'] . '" title="' . $txt['profile_of'] . ' ' . $member['name'] . '"' . (empty($member['color']) ? '' : ' style="color: ' . $member['color'] . '"') . '>' . $member['name'] . '</a>', '
+								</span>';]]></search>
+		<add><![CDATA[								<span class="member', $member['is_hidden'] ? ' hidden' : '', '">',
+									(!empty($modSettings['geoIP_enableflags']) ? '<img src="' . $settings['default_images_url'] . '/ISO_3166_Flags/' . (!empty($member['cc']) ? $member['cc'] : 'BLANK') . '.gif"  height="12" width="18" border="0" alt="[ * ]" title="' . (!empty($member['country']) ? $member['country'] : '') . '"/>&nbsp;' : ''), $member['is_guest'] ? $member['name'] : '<a href="' . $member['href'] . '" title="' . $txt['profile_of'] . ' ' . $member['name'] . '"' . (empty($member['color']) ? '' : ' style="color: ' . $member['color'] . '"') . '>' . $member['name'] . '</a>', '
+								</span>';]]></add>
+		</operation>
+		
+		<operation>
+			<search position="replace"><![CDATA[			</div>
+		</form>
+	</div>';]]></search>
+			<add><![CDATA[			</div>
+		</form>';
+	
+	if (!empty($context['can_see_onlinemap']))
+		echo '<a href="' . $scripturl . '?action=geoIP">[' . $txt['geoIPOnlineMap'] . ']</a>';
+	echo '
+	</div>';]]></add>
+		</operation>
+	</file>
+	
+	<file name="$sourcedir/Profile-View.php">
+		<operation>
+			<search position="before"><![CDATA[	// Searching?
+	if (isset($_REQUEST['searchip']))
+		$context['ip'] = trim($_REQUEST['searchip']);
+
+]]></search>
+			<add><![CDATA[	// geoIPing?
+	if (!empty($modSettings['geoIP_db']))
+	{
+		include_once($sourcedir . '/geoIP.php');
+		$context['geoIP'] =	($modSettings['geoIP_db'] == 2) ? geo_search_lite($context['ip'], true) : geo_search($context['ip']);
+	}
+]]></add>
+		</operation>
+	</file>
+	
+	<file name="$themedir/Profile.template.php">
+		<operation>
+			<search position="before"><![CDATA[function template_trackIP()
+{
+	global $context, $settings, $options, $scripturl, $txt;]]></search>
+			<add><![CDATA[
+	if (!empty($context['geoIP']) && count($context['geoIP']))
+		// This shows the geoIP information for this IP.
+		echo '
+		<div class="cat_bar">
+			<h3 class="catbg">', $txt['geoIP_info'], ': ', $context['ip'], '</h3>
+		</div>
+		<div class="windowbg2">
+			<span class="topslice"><span></span></span>
+			<div class="padding">',
+				$context['geoIP'][0]['city'], (!empty($context['geoIP'][0]['city']) ? '<br />' : ''), 
+				$context['geoIP'][0]['region'], (!empty($context['geoIP'][0]['region']) ? '<br />' : ''),
+				$context['geoIP'][0]['country'], (!empty($context['geoIP'][0]['country']) ? '<br />' : ''), 
+				'<img src="' , $settings['default_images_url'] , '/ISO_3166_Flags/' , $context['geoIP'][0]['cc'] . '.gif"  height="12" width="18" border="0" alt="[ * ]" title="' . $context['geoIP'][0]['country'] . '"/>&nbsp;', $context['geoIP'][0]['cc'], '
+			</div>
+			<span class="botslice"><span></span></span>
+		</div>
+		<br />';]]></add>
+		</operation>
+	</file>
+	
+	<file name="$sourcedir/ScheduledTasks.php">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+function scheduled_geoIP()
+{
+	global $txt, $sourcedir, $modSettings;
+	
+	require_once($sourcedir . '/geoIPAdmin.php');
+	
+	// Need to do this so we have some basic $txt available.
+	loadEssentialThemeData();
+	loadLanguage('Admin+geoIP');
+	
+	// Call the update function based on which database is installed
+	if ($modSettings['geoIP_db'] == 1)
+		$result = geoIPFull();
+	elseif ($modSettings['geoIP_db'] == 2)
+		$result = geoIPLite();
+
+	return $result;
+}
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Subs.php">
+		<operation>
+			<search position="replace" ><![CDATA[		$smcFunc['db_insert']($do_delete ? 'ignore' : 'replace',
+			'{db_prefix}log_online',
+			array('session' => 'string', 'id_member' => 'int', 'id_spider' => 'int', 'log_time' => 'int', 'ip' => 'raw', 'url' => 'string'),
+			array($session_id, $user_info['id'], empty($_SESSION['id_robot']) ? 0 : $_SESSION['id_robot'], time(), 'IFNULL(INET_ATON(\'' . $user_info['ip'] . '\'), 0)', $serialized),
+			array('session')
+		);]]></search>
+			<add><![CDATA[		// some geoIP for the map and online list when they first login
+		$geoIP = array();
+		if (!empty($modSettings['who_enabled']) && !empty($modSettings['geoIP_db']) && (!empty($modSettings['geoIP_enablemap']) || !empty($modSettings['geoIP_enableflags'])) && !empty($user_info['ip']))
+		{
+			// do a lookup, but database only, don't want the slowness of a network call here.
+			include_once($sourcedir . '/geoIP.php');
+			$geoIP = ($modSettings['geoIP_db'] == 2) ? geo_search_lite($user_info['ip'], false) : geo_search($user_info['ip'], false);
+		}
+		if (!empty($geoIP[0]))
+			$smcFunc['db_insert']($do_delete ? 'ignore' : 'replace',
+				'{db_prefix}log_online',
+				array('session' => 'string', 'id_member' => 'int', 'id_spider' => 'int', 'log_time' => 'int', 'ip' => 'raw', 'url' => 'string', 'latitude' => 'float', 'longitude' => 'float', 'country' => 'string', 'city' => 'string', 'cc' => 'string'),
+				array($session_id, $user_info['id'], empty($_SESSION['id_robot']) ? 0 : $_SESSION['id_robot'], time(), 'IFNULL(INET_ATON(\'' . $user_info['ip'] . '\'), 0)', $serialized, $geoIP[0]['latitude'], $geoIP[0]['longitude'], $geoIP[0]['country'], $geoIP[0]['city'], $geoIP[0]['cc']),
+				array('session')
+		);
+		else
+			$smcFunc['db_insert']($do_delete ? 'ignore' : 'replace',
+				'{db_prefix}log_online',
+				array('session' => 'string', 'id_member' => 'int', 'id_spider' => 'int', 'log_time' => 'int', 'ip' => 'raw', 'url' => 'string'),
+				array($session_id, $user_info['id'], empty($_SESSION['id_robot']) ? 0 : $_SESSION['id_robot'], time(), 'IFNULL(INET_ATON(\'' . $user_info['ip'] . '\'), 0)', $serialized),
+				array('session')
+			);]]></add>
+		</operation>
+	</file>	
+</modification>

@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>spuds:geoipMod</id>
+	<name>geoIP Location</name>
+	
+<file name="$themedir/languages/Modifications.english.php">
+	<operation>
+		<search position="end" />
+		<add><![CDATA[
+// geoIP menu tabs
+$txt['geoIP'] = 'Geo-IP';
+$txt['geoIPMap'] = 'Map Settings';
+$txt['geoIPMain'] = 'Geo-IP';
+$txt['geoIPSettings'] = 'Registration Settings';
+$txt['geoIPOnlineMap'] = 'Online Member Map';
+$txt['geoIP_info'] = 'GeoIP information for IP';
+$txt['permissionname_geoIP_view'] = 'View Who\'s Online Map';
+$txt['permissionhelp_geoIP_view'] = 'Allow the members to view the geoIP Whos Online Map.  If not set, these members will not see the map.';
+$txt['permissionname_geoIP_viewdetail'] = 'Identify Pin owner in the Online Map';
+$txt['permissionhelp_geoIP_viewdetail'] = 'Allow the members to view which member a pin belongs to on the geoIP Whos Online Map.  If not set, these members will not see the pin details.';
+$txt['scheduled_task_desc_geoIP'] = 'Attempts to retrieve and install the latest database (of the type you installed) from Maxmind';
+$txt['scheduled_task_geoIP'] = 'geoIP Database Update';
+$txt['cannot_geoIP_view'] = 'Sorry, you are not allowed to view the Whos Online Map.';
+]]></add>
+	</operation>
+</file>
+
+<file name="$themedir/languages/Who.english.php" error="skip">
+	<operation>
+		<search position="before"><![CDATA[$txt['whoall_who'] = 'Viewing <a href="' . $scripturl . '?action=who">Who\'s Online</a>.';]]></search>
+		<add><![CDATA[
+$txt['whoall_geoIP'] = 'Viewing the Online Member Map.';
+]]></add>
+	</operation>
+</file>
+
+</modification>
