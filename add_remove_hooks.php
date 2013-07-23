@@ -1,14 +1,8 @@
 <?php
-/**********************************************************************************
-* add_remove_hooks.php                                                            *
-***********************************************************************************
-***********************************************************************************
-* This program is distributed in the hope that it is and will be useful, but      *
-* WITHOUT ANY WARRANTIES; without even any implied warranty of MERCHANTABILITY    *
-* or FITNESS FOR A PARTICULAR PURPOSE.                                            *
-*                                                                                 *
-* This file is a simplified database installer. It does what it is suppoed to.    *
-**********************************************************************************/
+
+/**
+ * This file is a simplified hook installer. It does what it is suppoed to.
+ */
 
 // If we have found SSI.php and we are outside of SMF, then we are running standalone.
 if (file_exists(dirname(__FILE__) . '/SSI.php') && !defined('SMF'))
@@ -18,7 +12,7 @@ elseif (!defined('SMF')) // If we are outside SMF and can't find SSI.php, then t
 
 if (SMF == 'SSI')
 	db_extend('packages');
-	
+
 // Define the hooks
 $hook_functions = array(
 	'integrate_pre_include' => '$boarddir/Sources/geoIPIntegration.php',

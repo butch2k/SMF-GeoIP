@@ -563,8 +563,8 @@ function geo_search($ip_input, $search = true)
 
 		// Can help out with some hosts, but frankly if your host does not support
 		// the below query, a) you site is to small to need this, b) you host sucks
-		$smcFunc['db_query']('', 
-			'SET @@SQL_BIG_SELECTS = 1', 
+		$smcFunc['db_query']('',
+			'SET @@SQL_BIG_SELECTS = 1',
 			array()
 		);
 
@@ -717,6 +717,10 @@ function geo_search_lite($ip_input, $search = false)
 	return $memberIPData;
 }
 
+/**
+ * Updates the online log with the geoip information
+ * @param array $data
+ */
 function geo_save_data($data)
 {
 	global $smcFunc;

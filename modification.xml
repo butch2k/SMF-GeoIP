@@ -1,11 +1,13 @@
 <?xml version="1.0"?>
 <!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
-<!-- --------------------------------------------------------------------------
-  package "geoIP" Mod for Simple Machines Forum (SMF) V2.0
+<!--
+================================================================================
+  @package "geoIP" Mod for Simple Machines Forum (SMF) V2.0
   author Spuds
-  copyright (c) 2011 Spuds
+  copyright (c) 2011-2013 Spuds
   license Mozilla Public License version 1.1 http://www.mozilla.org/MPL/1.1/.
---------------------------------------------------------------------------- -->
+================================================================================
+-->
 <modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
 	<id>spuds:geoipMod</id>
 	<name>geoIP Location</name>
@@ -15,8 +17,8 @@
 			<search position="before"><![CDATA[	// You are not a guest, so you are a member - and members don't get to register twice!
 	elseif (empty($user_info['is_guest']))
 		redirectexit();]]></search>
-			<add><![CDATA[	
-	
+			<add><![CDATA[
+
 	// geoIP check to see if this is from an allowed country
 	if (!empty($modSettings['geoIP_enablereg']) && !empty($modSettings['geoIPCC']) && !allowedTo('moderate_forum') && !empty($modSettings['geoIP_db']))
 	{
@@ -35,7 +37,7 @@
 	}]]></add>
 		</operation>
 	</file>
-	
+
 	<file name="$themedir/BoardIndex.template.php">
 		<operation error="ignore">
 			<search position="replace"><![CDATA[	echo $context['show_who'] ? '</a>' : '', '
@@ -53,13 +55,13 @@
 						<div class="smalltext">';]]></add>
 		</operation>
 	</file>
-	
+
 	<file name="$sourcedir/Who.php">
 		<operation>
 			<search position="replace"><![CDATA[			lo.id_spider]]></search>
 			<add><![CDATA[			lo.id_spider, lo.cc, lo.country]]></add>
 		</operation>
-		
+
 		<operation>
 			<search position="replace"><![CDATA[			'id_spider' => $row['id_spider'],]]></search>
 			<add><![CDATA[			'id_spider' => $row['id_spider'],
@@ -67,7 +69,7 @@
 			'country' => $row['country'],]]></add>
 		</operation>
 	</file>
-	
+
 	<file name="$themedir/Who.template.php">
 		<operation>
 		<search position="replace"><![CDATA[function template_main()
@@ -77,7 +79,7 @@
 {
 	global $context, $settings, $options, $scripturl, $txt, $modSettings;]]></add>
 		</operation>
-		
+
 		<operation>
 		<search position="replace"><![CDATA[								<span class="member', $member['is_hidden'] ? ' hidden' : '', '">
 									', $member['is_guest'] ? $member['name'] : '<a href="' . $member['href'] . '" title="' . $txt['profile_of'] . ' ' . $member['name'] . '"' . (empty($member['color']) ? '' : ' style="color: ' . $member['color'] . '"') . '>' . $member['name'] . '</a>', '
@@ -86,21 +88,21 @@
 									(!empty($modSettings['geoIP_enableflags']) ? '<img src="' . $settings['default_images_url'] . '/ISO_3166_Flags/' . (!empty($member['cc']) ? $member['cc'] : 'BLANK') . '.gif"  height="12" width="18" border="0" alt="[ * ]" title="' . (!empty($member['country']) ? $member['country'] : '') . '"/>&nbsp;' : ''), $member['is_guest'] ? $member['name'] : '<a href="' . $member['href'] . '" title="' . $txt['profile_of'] . ' ' . $member['name'] . '"' . (empty($member['color']) ? '' : ' style="color: ' . $member['color'] . '"') . '>' . $member['name'] . '</a>', '
 								</span>';]]></add>
 		</operation>
-		
+
 		<operation>
 			<search position="replace"><![CDATA[			</div>
 		</form>
 	</div>';]]></search>
 			<add><![CDATA[			</div>
 		</form>';
-	
+
 	if (!empty($context['can_see_onlinemap']))
 		echo '<a href="' . $scripturl . '?action=geoIP">[' . $txt['geoIPOnlineMap'] . ']</a>';
 	echo '
 	</div>';]]></add>
 		</operation>
 	</file>
-	
+
 	<file name="$sourcedir/Profile-View.php">
 		<operation>
 			<search position="before"><![CDATA[	// Searching?
@@ -117,7 +119,7 @@
 ]]></add>
 		</operation>
 	</file>
-	
+
 	<file name="$themedir/Profile.template.php">
 		<operation>
 			<search position="before"><![CDATA[function template_trackIP()
@@ -133,9 +135,9 @@
 		<div class="windowbg2">
 			<span class="topslice"><span></span></span>
 			<div class="padding">',
-				$context['geoIP'][0]['city'], (!empty($context['geoIP'][0]['city']) ? '<br />' : ''), 
+				$context['geoIP'][0]['city'], (!empty($context['geoIP'][0]['city']) ? '<br />' : ''),
 				$context['geoIP'][0]['region'], (!empty($context['geoIP'][0]['region']) ? '<br />' : ''),
-				$context['geoIP'][0]['country'], (!empty($context['geoIP'][0]['country']) ? '<br />' : ''), 
+				$context['geoIP'][0]['country'], (!empty($context['geoIP'][0]['country']) ? '<br />' : ''),
 				'<img src="' , $settings['default_images_url'] , '/ISO_3166_Flags/' , $context['geoIP'][0]['cc'] . '.gif"  height="12" width="18" border="0" alt="[ * ]" title="' . $context['geoIP'][0]['country'] . '"/>&nbsp;', $context['geoIP'][0]['cc'], '
 			</div>
 			<span class="botslice"><span></span></span>
@@ -143,7 +145,7 @@
 		<br />';]]></add>
 		</operation>
 	</file>
-	
+
 	<file name="$sourcedir/ScheduledTasks.php">
 		<operation>
 			<search position="end" />
@@ -151,13 +153,13 @@
 function scheduled_geoIP()
 {
 	global $txt, $sourcedir, $modSettings;
-	
+
 	require_once($sourcedir . '/geoIPAdmin.php');
-	
+
 	// Need to do this so we have some basic $txt available.
 	loadEssentialThemeData();
 	loadLanguage('Admin+geoIP');
-	
+
 	// Call the update function based on which database is installed
 	if ($modSettings['geoIP_db'] == 1)
 		$result = geoIPFull();
@@ -201,5 +203,5 @@ function scheduled_geoIP()
 				array('session')
 			);]]></add>
 		</operation>
-	</file>	
+	</file>
 </modification>

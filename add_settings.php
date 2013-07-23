@@ -1,14 +1,8 @@
 <?php
-/**********************************************************************************
-* add_settings.php                                                                *
-***********************************************************************************
-***********************************************************************************
-* This program is distributed in the hope that it is and will be useful, but      *
-* WITHOUT ANY WARRANTIES; without even any implied warranty of MERCHANTABILITY    *
-* or FITNESS FOR A PARTICULAR PURPOSE.                                            *
-*                                                                                 *
-* This file is a simplified database installer. It does what it is suppoed to.    *
-**********************************************************************************/
+
+/**
+ * This file is a simplified database installer. It does what it is suppoed to.
+ */
 
 // If we have found SSI.php and we are outside of SMF, then we are running standalone.
 if (file_exists(dirname(__FILE__) . '/SSI.php') && !defined('SMF'))
@@ -18,7 +12,7 @@ elseif (!defined('SMF')) // If we are outside SMF and can't find SSI.php, then t
 
 if (SMF == 'SSI')
 	db_extend('packages');
-	
+
 global $modSettings, $smcFunc, $sourcedir;
 
 // mod settings for the settings table
@@ -265,6 +259,14 @@ foreach ($mod_settings as $new_setting => $new_value)
 if (SMF == 'SSI')
    echo 'Congratulations! You have successfully installed this mod!';
 
+/**
+ * Imports a CSV table in to a supplied table and structure
+ * Writes out the data in chunks to prevent timeouts / memory issues
+ *
+ * @param type $filename
+ * @param type $tablename
+ * @param type $colnames
+ */
 function importCsv($filename, $tablename, $colnames)
 {
 	global $smcFunc;
@@ -272,7 +274,7 @@ function importCsv($filename, $tablename, $colnames)
 	$chunk = 250;
 	$count = 0;
 	error_reporting(0);
-	
+
 	// read the geoip csv file and write it out to the database
 	if (file_exists($filename) && is_readable($filename))
 	{
@@ -284,7 +286,7 @@ function importCsv($filename, $tablename, $colnames)
 			$dataline = array();
 			foreach ($data as $value)
 				$dataline[] = trim($value, '"');
-			
+
 			// build the insert chunks
 			if ($count++ < $chunk)
 				$insert_me[] = $dataline;
@@ -299,11 +301,11 @@ function importCsv($filename, $tablename, $colnames)
 					array(
 					)
 				);
-			
+
 				// Next loop
 				$insert_me = array();
 				$count = 0;
-				
+
 				// try to avoid a timeout
 				if (function_exists('apache_reset_timeout'))
 					apache_reset_timeout();

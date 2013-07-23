@@ -82,6 +82,7 @@ function ipa_geoIP(&$profile_areas)
 	// Lets be sure to have geoIP information available when in the profile area.
 	$ip = (isset($_GET['searchip'])) ? $_GET['searchip'] : $context['member']['ip'];
 	include_once($sourcedir . '/geoIP.php');
+
 	if (isset($modSettings['geoIP_db']))
 		$context['geoIP'] =	($modSettings['geoIP_db'] == 1) ? geo_search($ip) : geo_search_lite($ip, true);
 }

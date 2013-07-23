@@ -1,6 +1,5 @@
 [hr]
 [center][size=16pt][b]geoIP Location Mod[/b][/size]
-[url=http://custom.simplemachines.org/mods/index.php?action=search;author=11359][b]By Spuds[/b][/url]
 [/center]
 [hr]
 
@@ -9,11 +8,11 @@ o This modification is released under a MPL V1.1 license, a copy of it with its 
 o This mod makes use of the GeoLite data created by MaxMind, available from [url=href=http://www.maxmind.com/]MaxMind[/url] which is released under an OPEN DATA LICENSE.
 
 [color=blue][b][size=12pt][u]Introduction[/u][/size][/b][/color]
-This modification adds the ability to determine the latitude & longitude of a member given their IP address. This is commonly referred to as geolocation.  The mod makes use of the GeoLite data created by MaxMind, available from http://www.maxmind.com/  
+This modification adds the ability to determine the latitude & longitude of a member given their IP address. This is commonly referred to as geolocation.  The mod makes use of the GeoLite data created by MaxMind, available from http://www.maxmind.com/
 
 In some instances the IP address will not be found in the installed database, or will have incomplete data.  In this case the mod will make use of the hostip.info site as a secondary source to gather its information.
 
-[b]A note on accuracy:[/b]  
+[b]A note on accuracy:[/b]
 Maxmind shows that this database (which is updated on a monthly basis) is over 99.5% accurate on a country level making it a viable source for registration blocking.
 
 When it comes to the city level accuracy this number is and 79% for the US (within a 25 mile radius).  That is the best accuracy, and other countries city/region location accuracy tapper off from that.  Even with that it still makes for an entertaining online member map.
@@ -39,7 +38,7 @@ This mod is compatible with SMF 2.0 Only.
 Please use the geoIP modification thread for support with this modification.
 
 [color=blue][b][size=12pt][u]Changelog[/u][/size][/b][/color]
-[b]1.1.1 - 23 Jan 2012[/b]
+[b]1.2 - 23 Jan 2012[/b]
 ! fixed error with county only database and Invalid Value Sent to Database error
 ! fixed issue with external lookups parsing
 
